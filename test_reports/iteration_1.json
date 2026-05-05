@@ -1,0 +1,42 @@
+{
+  "summary": "First testing pass for Olevia aromatherapy site. Backend: 17/18 pytest tests pass (94%). Frontend: All critical flows verified - Home/Products/Blogs/BlogDetail/Login/Admin/Mobile work; Inquire modal renders WhatsApp+Email+Copy; admin CRUD works end-to-end; route guard correct; no Add to Cart anywhere. Cleaned up curl test post.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/", "issue": "Returns 404. Root route is declared on line 575 AFTER `app.include_router(api_router)` on line 539, so it's not registered. Move the route declaration above include_router (or use @app.get). Not a user-facing bug since the frontend doesn't call /api/."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Logout from /admin", "issue": "After clicking the logout button while on /admin, user lands on /login (because ProtectedRoute redirects), not on the home page as the spec describes ('returns to home'). Minor UX deviation - consider navigating to '/' explicitly in the logout handler before route-guard kicks in.", "affected_selectors": ["nav-logout-btn"]}
+    ],
+    "design_issues": [
+      {"screen": "Mobile menu (/, viewport 390px)", "issues": ["Mobile menu overlay backdrop is too transparent — the hero headline bleeds through behind 'Home / Shop / Journal' links, hurting readability. Increase backdrop opacity or add a solid cream background to the mobile menu container."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_olevia_backend.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Move @api_router.get('/') above app.include_router(api_router) so /api/ returns 200 instead of 404 (cosmetic; frontend does not call it).",
+    "Make logout redirect explicitly to '/' instead of relying on route-guard fallback to /login (matches spec 'returns to home').",
+    "Tighten mobile menu backdrop — currently too transparent on Home page (text bleed-through)."
+  ],
+  "critical_code_review_comments": [
+    "server.py line 575: route ordering bug — declaring routes after include_router has no effect.",
+    "Auth playbook: bcrypt is used correctly ($2b$ hashes), JWT secret from env, idempotent seed_admin updates password if changed. Good.",
+    "No httpOnly cookie auth — only Bearer token in localStorage (acceptable for this admin-only app, but worth noting that XSS would expose the token).",
+    "No brute-force / rate-limit on /api/auth/login. Currently unlimited password attempts return 401 — recommend lockout after 5 fails per IP/email.",
+    "Inquire modal correctly uses WhatsApp share URL + mailto: external intents — no checkout, as required.",
+    "No MongoDB ObjectId leaks observed in any response (all queries project {_id:0})."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_olevia_backend.py (created)"
+  ],
+  "success_rate": {"backend": "94% (17/18)", "frontend": "100% of tested flows"},
+  "test_credentials": "admin@olevia.com / olevia2025 (verified working)",
+  "seed_data_creation": "None new. Backend auto-seeds 1 admin + 12 products + 5 blogs idempotently on startup. Cleaned up the leftover 'Test Post By Curl' blog after testing.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend test suite at /app/backend/tests/test_olevia_backend.py covers auth (login success/fail, /me with/without token), products (list + 4 category filters), blogs public (list/sort/get-by-slug/404), and full admin CRUD with auto-slug regeneration on title change. Run: pytest /app/backend/tests/test_olevia_backend.py -v. Known acceptable failure: TestHealth.test_root expects /api/ 200 but server returns 404 due to route ordering — main agent will fix.",
+  "rca of the issue": "TestHealth.test_root failure RCA: in /app/backend/server.py, `app.include_router(api_router)` runs at line 539 but `@api_router.get('/')` is declared at line 575. FastAPI's APIRouter snapshots its routes when included; later declarations on the same router are NOT picked up. Fix: move the root handler above line 539 OR re-include the router after declaring it OR change to `@app.get('/api/')`. Reproduction: curl https://olevia-healing.preview.emergentagent.com/api/ → 404. Mitigation: low priority — frontend does not call this endpoint."
+}
