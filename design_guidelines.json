@@ -1,0 +1,161 @@
+{
+  "theme": "Light",
+  "archetype": "Archetype 1 (Organic & Earthy)",
+  "brand": {
+    "name": "Olevia",
+    "slogan": "Balance Begins Here",
+    "logo_url": "https://customer-assets.emergentagent.com/job_0c6dacb0-b396-4364-8cbc-6314f49a613f/artifacts/uj5cttws_19877%20%282%29.png"
+  },
+  "colors": {
+    "background": {
+      "primary": "#F9F6F0",
+      "secondary": "#EAE5D9",
+      "glass": "rgba(249, 246, 240, 0.75)"
+    },
+    "surface": {
+      "card": "#FFFFFF",
+      "card_hover": "#F4F0E6"
+    },
+    "brand": {
+      "sage_green": "#8F9E8B",
+      "sage_dark": "#6A7B66",
+      "amber": "#D4A373",
+      "amber_dark": "#B58555",
+      "forest_green": "#2A3B2C"
+    },
+    "text": {
+      "primary": "#2A3B2C",
+      "secondary": "#5C6B5D",
+      "muted": "#8A9A8B",
+      "inverse": "#F9F6F0"
+    },
+    "border": {
+      "subtle": "#E2DAC8",
+      "focus": "#8F9E8B"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Cormorant Garamond, serif",
+      "body": "Manrope, sans-serif"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-6xl tracking-tight leading-none font-medium",
+      "h2": "text-4xl md:text-5xl tracking-tight leading-none font-medium",
+      "h3": "text-2xl md:text-3xl leading-snug font-medium",
+      "h4": "text-xl font-medium",
+      "body_large": "text-lg leading-relaxed",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm tracking-wide uppercase",
+      "overline": "text-xs tracking-[0.2em] uppercase font-bold text-amber_dark"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "section_padding": "py-24 md:py-32",
+      "container_padding": "px-6 md:px-12 lg:px-24",
+      "card_padding": "p-8 md:p-12",
+      "gap_standard": "gap-8 md:gap-12",
+      "gap_large": "gap-16 md:gap-24"
+    },
+    "radius": {
+      "card": "rounded-2xl",
+      "button": "rounded-full",
+      "image": "rounded-3xl"
+    },
+    "grids": {
+      "bento_marketing": "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12",
+      "catalog": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+    }
+  },
+  "components": {
+    "navigation": {
+      "style": "sticky top-0 z-50 backdrop-blur-xl bg-[#F9F6F0]/80 border-b border-[#E2DAC8]/50",
+      "links": "text-sm tracking-widest uppercase font-medium hover:text-amber_dark transition-colors",
+      "mobile": "hamburger menu opening a full-screen or sliding organic overlay"
+    },
+    "buttons": {
+      "primary": "bg-[#8F9E8B] text-[#F9F6F0] hover:bg-[#6A7B66] rounded-full px-8 py-4 transition-all duration-300 ease-out flex items-center justify-center font-medium",
+      "secondary": "bg-transparent border border-[#8F9E8B] text-[#2A3B2C] hover:bg-[#8F9E8B] hover:text-[#F9F6F0] rounded-full px-8 py-4 transition-all duration-300 ease-out font-medium",
+      "ghost": "text-[#2A3B2C] hover:text-[#D4A373] transition-colors underline-offset-4 hover:underline"
+    },
+    "cards": {
+      "base": "bg-white rounded-2xl border border-[#E2DAC8] overflow-hidden group hover:-translate-y-1 transition-transform duration-300",
+      "image_container": "relative aspect-[4/5] overflow-hidden bg-[#EAE5D9]",
+      "image": "object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out"
+    },
+    "inputs": {
+      "base": "bg-transparent border-b border-[#2A3B2C]/20 rounded-none px-0 py-3 focus:outline-none focus:border-[#8F9E8B] focus:ring-0 placeholder:text-[#5C6B5D]/50 transition-colors"
+    }
+  },
+  "sections": {
+    "hero": {
+      "layout": "min-h-[90vh] flex flex-col justify-center relative overflow-hidden",
+      "content": "Max-w-3xl z-10 relative",
+      "image_overlay": "Absolute inset-0 z-0. Image should have a subtle gradient overlay (bg-gradient-to-r from-[#F9F6F0]/90 to-[#F9F6F0]/40) to ensure text readability."
+    },
+    "bento_features": {
+      "description": "Used for 'How Aromatherapy Heals'. Grid of organic shaped cards (mixing span-4, span-8, tall and wide cards). Soft shadow-sm, earthy background colors varying slightly per card."
+    },
+    "timeline": {
+      "description": "Used for 'History of Aromatherapy'. Vertical line with alternating left/right content blocks. Heavy use of negative space, serif typography for dates, and subtle scroll-triggered fade-ups."
+    },
+    "footer": {
+      "style": "bg-[#2A3B2C] text-[#F9F6F0] py-20 rounded-t-[3rem] mt-24",
+      "text": "Contrasting light text on dark forest green. Large typography for brand name/slogan."
+    }
+  },
+  "animations": {
+    "scroll": "Smooth scrolling via Lenis is mandatory. Use framer-motion for staggered fade-up on text blocks and subtle parallax on images.",
+    "hover": "Images in cards scale up slightly (1.05x). Buttons have a slight lift or color shift.",
+    "page_transition": "Gentle fade in with a very subtle upward motion (y: 20 -> 0)."
+  },
+  "media": {
+    "image_urls": {
+      "hero_background": {
+        "url": "https://images.pexels.com/photos/7704483/pexels-photo-7704483.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Close-up of aromatic oil being poured into a glass beaker, sets a premium moody and holistic tone."
+      },
+      "history_timeline_bg": {
+        "url": "https://images.unsplash.com/photo-1679060170179-c384186c87ad",
+        "description": "Close up of botanical plant with sage green leaves, used as a subtle background or accent image in the timeline."
+      },
+      "category_diffuser_blends": {
+        "url": "https://images.pexels.com/photos/7771975/pexels-photo-7771975.jpeg",
+        "description": "Essential oil bottles with handwritten labels."
+      },
+      "category_roll_ons": {
+        "url": "https://images.unsplash.com/photo-1647943746660-1640133068d5",
+        "description": "Amber brown glass roll-on bottle."
+      },
+      "category_soaps": {
+        "url": "https://images.unsplash.com/photo-1605264660294-f060dc6bb0a3",
+        "description": "Handmade natural white square soap."
+      },
+      "category_plants": {
+        "url": "https://images.unsplash.com/photo-1659834742700-67c738ee539c",
+        "description": "Close up of a calm botanical plant."
+      },
+      "blog_placeholder_1": {
+        "url": "https://images.unsplash.com/photo-1603719614761-f5437f81a61d",
+        "description": "Woman holding white plastic bottle, representing wellness routines."
+      },
+      "blog_placeholder_2": {
+        "url": "https://images.unsplash.com/photo-1552017650-c117c3535f68",
+        "description": "White ceramic vase setup."
+      },
+      "blog_placeholder_3": {
+        "url": "https://images.unsplash.com/photo-1707858950463-d47f5fcaacfa",
+        "description": "A hand touching a bottle of essential oils."
+      }
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install required dependencies: 'yarn add framer-motion lenis lucide-react react-router-dom'.",
+    "Use standard HTML/Tailwind for marketing sections. Use Shadcn components minimally, mostly for Admin Dashboard (tables, forms).",
+    "Apply 'Cormorant Garamond' for all H1-H3 headings. Use 'Manrope' for body text. Update index.css with appropriate @import or next/font if applicable (assume standard web fonts approach, add Google Fonts links in index.html).",
+    "The products page should NOT have a cart. Replace standard 'Add to Cart' with an 'Inquire' button (can open a simple mailto: or a generic contact modal).",
+    "Implement the 'Bento Grid Protocol' for the 'How Aromatherapy Heals' section on the Home page. Assymetrical boxes with different spans.",
+    "Ensure 'data-testid' is added to all interactive elements."
+  ]
+}
