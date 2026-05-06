@@ -19,6 +19,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("blogs"); // blogs | inquiries
   const [blogs, setBlogs] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
@@ -34,6 +35,12 @@ export default function AdminDashboard() {
       setInquiries(r.data || []);
     } catch {
       setInquiries([]);
+    }
+    try {
+      const a = await api.get("/inquiries/analytics");
+      setAnalytics(a.data || null);
+    } catch {
+      setAnalytics(null);
     }
   };
 
@@ -186,6 +193,9 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div data-testid="admin-inquiries-list" className="space-y-4">
+              {analytics && analytics.total > 0 && (
+                <InquiryAnalytics analytics={analytics} />
+              )}
               {inquiries.length === 0 ? (
                 <div className="bg-white border border-olevia-border rounded-2xl p-12 text-center text-olevia-muted">
                   No inquiries yet. Inquiries from the Shop page will appear here and be emailed to you.
@@ -369,5 +379,84 @@ function Field({ label, testid, children }) {
       <span className="olevia-overline mb-2 block">{label}</span>
       {children}
     </label>
+  );
+}
+
+function InquiryAnalytics({ analytics }) {
+  const maxDaily = Math.max(1, ...analytics.daily.map((d) => d.count));
+  const maxTop = Math.max(1, ...analytics.top_products.map((p) => p.count));
+  const total = analytics.total || 0;
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6" data-testid="admin-inquiry-analytics">
+      {/* KPI strip */}
+      <div className="lg:col-span-4 bg-olevia-forest text-olevia-cream rounded-2xl p-7 md:p-8 flex flex-col justify-between">
+        <div>
+          <div className="olevia-overline" style={{ color: "#D4A373" }}>Total inquiries</div>
+          <div className="font-serif text-6xl md:text-7xl leading-none mt-3">{total}</div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 mt-8 pt-6 border-t border-olevia-cream/15">
+          <div>
+            <div className="text-[10px] tracking-[0.25em] uppercase text-olevia-amber">New</div>
+            <div className="font-serif text-3xl mt-1">{analytics.new}</div>
+          </div>
+          <div>
+            <div className="text-[10px] tracking-[0.25em] uppercase text-olevia-cream/60">Handled</div>
+            <div className="font-serif text-3xl mt-1">{analytics.handled}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Last 7 days */}
+      <div className="lg:col-span-4 bg-white border border-olevia-border rounded-2xl p-7 md:p-8">
+        <div className="olevia-overline mb-4">Last 7 days</div>
+        <div className="flex items-end gap-2 h-32">
+          {analytics.daily.map((d) => {
+            const pct = (d.count / maxDaily) * 100;
+            const dayLabel = new Date(d.date + "T00:00:00").toLocaleDateString(undefined, { weekday: "short" });
+            return (
+              <div key={d.date} className="flex-1 flex flex-col items-center justify-end gap-2" data-testid={`daily-${d.date}`}>
+                <div className="text-[11px] font-semibold text-olevia-forest h-4">
+                  {d.count > 0 ? d.count : ""}
+                </div>
+                <div
+                  className="w-full rounded-t-md bg-olevia-sage/80 min-h-[4px] transition-all"
+                  style={{ height: `${Math.max(4, pct)}%` }}
+                />
+                <div className="text-[10px] tracking-wide uppercase text-olevia-muted">{dayLabel[0]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Top products */}
+      <div className="lg:col-span-4 bg-olevia-bone/40 border border-olevia-border rounded-2xl p-7 md:p-8">
+        <div className="olevia-overline mb-4">Most inquired</div>
+        {analytics.top_products.length === 0 ? (
+          <div className="text-sm text-olevia-muted">No product-tagged inquiries yet.</div>
+        ) : (
+          <ul className="space-y-3" data-testid="top-products-list">
+            {analytics.top_products.slice(0, 5).map((p) => {
+              const pct = (p.count / maxTop) * 100;
+              return (
+                <li key={(p.product_id || "") + p.product_name}>
+                  <div className="flex items-center justify-between text-sm mb-1.5">
+                    <span className="text-olevia-forest truncate pr-3">{p.product_name}</span>
+                    <span className="font-serif text-xl text-olevia-sage-dark">{p.count}</span>
+                  </div>
+                  <div className="h-1.5 bg-olevia-border/60 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-olevia-amber"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </div>
   );
 }

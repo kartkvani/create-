@@ -336,7 +336,7 @@ async def send_inquiry_email(inquiry: dict) -> bool:
             </table>
             <div style="margin-top:32px;padding-top:20px;border-top:1px solid #E2DAC8;color:#8A9A8B;font-size:12px;">
               Reply directly to this email to reach the customer.<br/>
-              Sent from olevia.com · Balance Begins Here
+              Sent from olevia.ca · Balance Begins Here
             </div>
           </td>
         </tr>
@@ -362,7 +362,22 @@ async def send_inquiry_email(inquiry: dict) -> bool:
 
 
 @api_router.post("/inquiries", response_model=Inquiry)
-async def create_inquiry(data: InquiryCreate):
+async def create_inquiry(data: InquiryCreate, request: Request):
+    # Simple rate limit: max 5 inquiries / 10 min per IP
+    client_ip = (
+        request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+        or (request.client.host if request.client else "unknown")
+    )
+    ten_min_ago = (datetime.now(timezone.utc) - timedelta(minutes=10)).isoformat()
+    recent = await db.inquiries.count_documents(
+        {"_rate_ip": client_ip, "created_at": {"$gte": ten_min_ago}}
+    )
+    if recent >= 5:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many inquiries from this address. Please try again in a few minutes.",
+        )
+
     now = datetime.now(timezone.utc)
     doc = {
         "id": str(uuid.uuid4()),
@@ -370,18 +385,78 @@ async def create_inquiry(data: InquiryCreate):
         "status": "new",
         "email_sent": False,
         "created_at": now.isoformat(),
+        "_rate_ip": client_ip,
     }
     sent = await send_inquiry_email(doc)
     doc["email_sent"] = sent
     await db.inquiries.insert_one(doc)
     doc.pop("_id", None)
+    doc.pop("_rate_ip", None)
     doc["created_at"] = now
     return doc
 
 
+@api_router.get("/inquiries/analytics")
+async def inquiries_analytics(_: dict = Depends(require_admin)):
+    now = datetime.now(timezone.utc)
+    total = await db.inquiries.count_documents({})
+    new_count = await db.inquiries.count_documents({"status": "new"})
+    handled_count = await db.inquiries.count_documents({"status": "handled"})
+
+    # Top products
+    top = await db.inquiries.aggregate([
+        {"$match": {"product_name": {"$ne": None}}},
+        {"$group": {
+            "_id": {"product_id": "$product_id", "product_name": "$product_name"},
+            "count": {"$sum": 1},
+        }},
+        {"$sort": {"count": -1}},
+        {"$limit": 8},
+    ]).to_list(20)
+    top_products = [
+        {
+            "product_id": r["_id"].get("product_id"),
+            "product_name": r["_id"].get("product_name"),
+            "count": r["count"],
+        }
+        for r in top
+    ]
+
+    # Last 7 days daily counts
+    seven_days_ago = (now - timedelta(days=6)).replace(hour=0, minute=0, second=0, microsecond=0)
+    by_day: dict[str, int] = {}
+    cursor = db.inquiries.find(
+        {"created_at": {"$gte": seven_days_ago.isoformat()}},
+        {"_id": 0, "created_at": 1},
+    )
+    async for d in cursor:
+        ts = d.get("created_at")
+        if isinstance(ts, str):
+            try:
+                dt = datetime.fromisoformat(ts)
+            except ValueError:
+                continue
+        else:
+            dt = ts
+        key = dt.date().isoformat()
+        by_day[key] = by_day.get(key, 0) + 1
+    daily = []
+    for i in range(6, -1, -1):
+        d = (now - timedelta(days=i)).date().isoformat()
+        daily.append({"date": d, "count": by_day.get(d, 0)})
+
+    return {
+        "total": total,
+        "new": new_count,
+        "handled": handled_count,
+        "top_products": top_products,
+        "daily": daily,
+    }
+
+
 @api_router.get("/inquiries", response_model=List[Inquiry])
 async def list_inquiries(_: dict = Depends(require_admin)):
-    docs = await db.inquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    docs = await db.inquiries.find({}, {"_id": 0, "_rate_ip": 0}).sort("created_at", -1).to_list(500)
     for d in docs:
         if isinstance(d.get("created_at"), str):
             d["created_at"] = datetime.fromisoformat(d["created_at"])
@@ -720,6 +795,7 @@ async def on_startup():
         await db.products.create_index("id", unique=True)
         await db.inquiries.create_index("id", unique=True)
         await db.inquiries.create_index("created_at")
+        await db.inquiries.create_index("_rate_ip")
         await seed_admin()
         await seed_blogs()
         await seed_products()

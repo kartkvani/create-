@@ -66,11 +66,11 @@ export default function Footer() {
               <li className="flex items-center gap-3">
                 <Mail size={14} className="text-olevia-amber" />
                 <a
-                  href="mailto:hello@olevia.com"
+                  href="mailto:kartk.vani@gmail.com"
                   className="hover:text-olevia-amber transition-colors"
                   data-testid="footer-email"
                 >
-                  hello@olevia.com
+                  kartk.vani@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
