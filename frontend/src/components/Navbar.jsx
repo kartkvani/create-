@@ -85,8 +85,8 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => {
-                logout();
                 navigate("/");
+                logout();
               }}
               data-testid="nav-logout-btn"
               className="btn-ghost"
@@ -116,7 +116,7 @@ export default function Navbar() {
 
       {open && (
         <div
-          className="md:hidden fixed inset-0 bg-olevia-cream z-50 animate-fade-up"
+          className="md:hidden fixed inset-0 bg-olevia-cream z-[100] overflow-y-auto animate-fade-up"
           data-testid="mobile-menu"
         >
           <div className="olevia-container flex items-center justify-between h-20">
@@ -162,9 +162,9 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => {
-                    logout();
-                    setOpen(false);
                     navigate("/");
+                    setOpen(false);
+                    logout();
                   }}
                   className="btn-secondary"
                   data-testid="mobile-logout-btn"

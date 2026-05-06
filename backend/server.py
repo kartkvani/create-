@@ -535,6 +535,16 @@ async def seed_products():
         })
 
 
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    client.close()
+
+
+@api_router.get("/")
+async def root():
+    return {"message": "Olevia API", "version": "1.0"}
+
+
 # ---------- Registration & Startup ----------
 app.include_router(api_router)
 
@@ -565,13 +575,3 @@ async def on_startup():
         await seed_products()
     except Exception as e:
         logger.exception(f"Startup seeding error: {e}")
-
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
-
-
-@api_router.get("/")
-async def root():
-    return {"message": "Olevia API", "version": "1.0"}
