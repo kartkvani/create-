@@ -8,11 +8,13 @@ import os
 import uuid
 import logging
 import re
+import asyncio
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 
 import bcrypt
 import jwt
+import resend
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -156,6 +158,27 @@ class Product(BaseModel):
     featured: bool = False
 
 
+class InquiryCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=120)
+    email: EmailStr
+    message: str = Field(..., min_length=5, max_length=2000)
+    product_id: Optional[str] = None
+    product_name: Optional[str] = Field(default=None, max_length=200)
+
+
+class Inquiry(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    name: str
+    email: EmailStr
+    message: str
+    product_id: Optional[str] = None
+    product_name: Optional[str] = None
+    status: str = "new"  # new | handled
+    email_sent: bool = False
+    created_at: datetime
+
+
 # ---------- Auth Endpoints ----------
 @api_router.post("/auth/login", response_model=LoginResponse)
 async def login(data: LoginRequest):
@@ -259,6 +282,131 @@ async def list_products(category: Optional[str] = None):
     query = {"category": category} if category else {}
     docs = await db.products.find(query, {"_id": 0}).to_list(500)
     return docs
+
+
+# ---------- Inquiry Endpoints ----------
+def _html_escape(text: str) -> str:
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+async def send_inquiry_email(inquiry: dict) -> bool:
+    api_key = os.environ.get("RESEND_API_KEY")
+    if not api_key:
+        logger.warning("RESEND_API_KEY not set — skipping email")
+        return False
+    resend.api_key = api_key
+    sender = os.environ.get("SENDER_EMAIL", "Olevia <onboarding@resend.dev>")
+    to_email = os.environ.get("INQUIRY_TO_EMAIL", "")
+    if not to_email:
+        logger.warning("INQUIRY_TO_EMAIL not set — skipping email")
+        return False
+
+    product_block = ""
+    if inquiry.get("product_name"):
+        product_block = (
+            f'<tr><td style="padding:6px 0;color:#5C6B5D;font-size:13px;'
+            f'letter-spacing:0.12em;text-transform:uppercase;">Product</td></tr>'
+            f'<tr><td style="padding:0 0 18px 0;color:#2A3B2C;font-size:18px;'
+            f'font-family:Georgia,serif;">{_html_escape(inquiry["product_name"])}</td></tr>'
+        )
+
+    html = f"""
+    <div style="background:#F9F6F0;padding:40px 20px;font-family:Arial,sans-serif;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #E2DAC8;">
+        <tr>
+          <td style="background:#2A3B2C;padding:28px 32px;color:#F9F6F0;">
+            <div style="font-family:Georgia,serif;font-size:28px;letter-spacing:0.5px;">Olevia</div>
+            <div style="font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:#D4A373;margin-top:6px;">New inquiry received</div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              {product_block}
+              <tr><td style="padding:6px 0;color:#5C6B5D;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;">From</td></tr>
+              <tr><td style="padding:0 0 6px 0;color:#2A3B2C;font-size:16px;">{_html_escape(inquiry["name"])}</td></tr>
+              <tr><td style="padding:0 0 18px 0;"><a href="mailto:{_html_escape(inquiry["email"])}" style="color:#6A7B66;font-size:14px;">{_html_escape(inquiry["email"])}</a></td></tr>
+              <tr><td style="padding:6px 0;color:#5C6B5D;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;">Message</td></tr>
+              <tr><td style="padding:8px 0 0 0;color:#2A3B2C;font-size:15px;line-height:1.7;white-space:pre-line;">{_html_escape(inquiry["message"])}</td></tr>
+            </table>
+            <div style="margin-top:32px;padding-top:20px;border-top:1px solid #E2DAC8;color:#8A9A8B;font-size:12px;">
+              Reply directly to this email to reach the customer.<br/>
+              Sent from olevia.com · Balance Begins Here
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    """
+
+    params = {
+        "from": sender,
+        "to": [to_email],
+        "reply_to": inquiry["email"],
+        "subject": f"New Olevia inquiry — {inquiry.get('product_name') or 'General'}",
+        "html": html,
+    }
+
+    try:
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Inquiry email sent id={result.get('id')}")
+        return True
+    except Exception as e:
+        logger.error(f"Resend send failed: {e}")
+        return False
+
+
+@api_router.post("/inquiries", response_model=Inquiry)
+async def create_inquiry(data: InquiryCreate):
+    now = datetime.now(timezone.utc)
+    doc = {
+        "id": str(uuid.uuid4()),
+        **data.model_dump(),
+        "status": "new",
+        "email_sent": False,
+        "created_at": now.isoformat(),
+    }
+    sent = await send_inquiry_email(doc)
+    doc["email_sent"] = sent
+    await db.inquiries.insert_one(doc)
+    doc.pop("_id", None)
+    doc["created_at"] = now
+    return doc
+
+
+@api_router.get("/inquiries", response_model=List[Inquiry])
+async def list_inquiries(_: dict = Depends(require_admin)):
+    docs = await db.inquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    for d in docs:
+        if isinstance(d.get("created_at"), str):
+            d["created_at"] = datetime.fromisoformat(d["created_at"])
+    return docs
+
+
+@api_router.patch("/inquiries/{inquiry_id}", response_model=Inquiry)
+async def update_inquiry(inquiry_id: str, status: str, _: dict = Depends(require_admin)):
+    if status not in ("new", "handled"):
+        raise HTTPException(status_code=400, detail="Invalid status")
+    res = await db.inquiries.update_one({"id": inquiry_id}, {"$set": {"status": status}})
+    if res.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Inquiry not found")
+    doc = await db.inquiries.find_one({"id": inquiry_id}, {"_id": 0})
+    if isinstance(doc.get("created_at"), str):
+        doc["created_at"] = datetime.fromisoformat(doc["created_at"])
+    return doc
+
+
+@api_router.delete("/inquiries/{inquiry_id}")
+async def delete_inquiry(inquiry_id: str, _: dict = Depends(require_admin)):
+    res = await db.inquiries.delete_one({"id": inquiry_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Inquiry not found")
+    return {"ok": True}
 
 
 # ---------- Seed Data ----------
@@ -570,6 +718,8 @@ async def on_startup():
         await db.blog_posts.create_index("slug", unique=True)
         await db.blog_posts.create_index("id", unique=True)
         await db.products.create_index("id", unique=True)
+        await db.inquiries.create_index("id", unique=True)
+        await db.inquiries.create_index("created_at")
         await seed_admin()
         await seed_blogs()
         await seed_products()
