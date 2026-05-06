@@ -537,7 +537,7 @@ SAMPLE_PRODUCTS = [
         "description": "Peppermint, rosemary and sweet orange — a crisp, uplifting blend to start the day with clear focus and gentle energy.",
         "benefits": ["Sharpens focus", "Uplifts mood", "Supports clarity"],
         "price": 28.0,
-        "image": "https://images.unsplash.com/photo-1585147369770-3c0663b96b48?auto=format&fit=crop&w=940",
+        "image": "https://images.unsplash.com/photo-1587049633312-d628ae50a8ae?auto=format&fit=crop&w=940&q=80",
         "featured": True,
     },
     {
@@ -574,7 +574,7 @@ SAMPLE_PRODUCTS = [
         "description": "Roman chamomile, cedarwood and sweet marjoram in a gentle jojoba base — apply to wrists and soles of feet 20 minutes before bed.",
         "benefits": ["Promotes deep sleep", "Quiets the mind", "Safe for nightly use"],
         "price": 22.0,
-        "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=940",
+        "image": "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=940&q=80",
         "featured": False,
     },
     # Therapeutic Plants
@@ -584,7 +584,7 @@ SAMPLE_PRODUCTS = [
         "description": "A live, fragrant English lavender plant in a handthrown terracotta pot — touch the leaves anytime for an instant calming aroma.",
         "benefits": ["Live aromatherapy", "Calming scent on demand", "Air-purifying"],
         "price": 34.0,
-        "image": "https://images.unsplash.com/photo-1595351479937-7aa5cc64f1cb?auto=format&fit=crop&w=940",
+        "image": "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=940&q=80",
         "featured": False,
     },
     {
@@ -593,7 +593,7 @@ SAMPLE_PRODUCTS = [
         "description": "A compact upright rosemary — keep it by your desk, brush the leaves while you work, and breathe in the 1,8-cineole that supports focus.",
         "benefits": ["Supports focus & memory", "Culinary use", "Low-maintenance"],
         "price": 28.0,
-        "image": "https://images.unsplash.com/photo-1550411294-098063f05f99?auto=format&fit=crop&w=940",
+        "image": "https://images.unsplash.com/photo-1515586000433-45406d8e6662?auto=format&fit=crop&w=940&q=80",
         "featured": False,
     },
     {
@@ -621,7 +621,7 @@ SAMPLE_PRODUCTS = [
         "description": "Activated charcoal draws impurities while tea tree clarifies and refreshes. Our pick for oily skin and post-workout washes.",
         "benefits": ["Deep cleansing", "Clarifies pores", "Naturally antibacterial"],
         "price": 14.0,
-        "image": "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?auto=format&fit=crop&w=940",
+        "image": "https://images.unsplash.com/photo-1503431128871-cd250803fa41?auto=format&fit=crop&w=940&q=80",
         "featured": False,
     },
     {
@@ -630,7 +630,7 @@ SAMPLE_PRODUCTS = [
         "description": "French pink rose clay with Bourbon geranium — softly floral, softly pink, and leaves the skin with a visible glow.",
         "benefits": ["Brightens skin", "Balances oil", "Luxurious feel"],
         "price": 16.0,
-        "image": "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?auto=format&fit=crop&w=940",
+        "image": "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=940&q=80",
         "featured": False,
     },
 ]
