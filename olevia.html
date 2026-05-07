@@ -779,7 +779,64 @@
     .icon { display: inline-flex; align-items: center; justify-content: center; }
     svg { stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
-    /* ── Responsive helpers ── */
+    /* ════════════════════════════════
+       REVIEWS SECTION
+    ════════════════════════════════ */
+    .reviews-section { background: var(--forest); padding: 6rem 0; }
+    .reviews-header { text-align: center; margin-bottom: 3.5rem; }
+    .reviews-header h2 { font-size: clamp(2rem, 4vw, 2.8rem); color: var(--cream); line-height: 1.15; margin-top: 1rem; }
+    .reviews-header .overline { color: var(--amber); }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px)  { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .reviews-grid { grid-template-columns: repeat(4, 1fr); } }
+    .review-card {
+      background: rgba(249,246,240,0.06);
+      border: 1px solid rgba(249,246,240,0.12);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: background 0.3s, transform 0.4s cubic-bezier(.22,1,.36,1);
+    }
+    .review-card:hover {
+      background: rgba(249,246,240,0.1);
+      transform: translateY(-3px);
+    }
+    .review-stars { color: var(--amber); font-size: 0.85rem; letter-spacing: 0.1em; }
+    .review-product-tag {
+      display: inline-block;
+      background: rgba(143,158,139,0.25);
+      color: var(--sage);
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      width: fit-content;
+    }
+    .review-text {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .review-author {
+      border-top: 1px solid rgba(249,246,240,0.1);
+      padding-top: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .review-name { font-size: 0.8rem; font-weight: 700; color: var(--cream); letter-spacing: 0.05em; }
+    .review-location { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); }
     @media (max-width: 767px) {
       .hide-mobile { display: none !important; }
     }
@@ -877,91 +934,6 @@
     </div>
   </section>
 
-  <!-- WHAT IS AROMATHERAPY -->
-  <section class="section">
-    <div class="container what-grid">
-      <div class="what-img-wrap fade-up">
-        <img src="https://images.pexels.com/photos/4041388/pexels-photo-4041388.jpeg?auto=compress&cs=tinysrgb&w=800&h=1000&fit=crop" alt="Therapeutic plant close up" />
-        <div class="what-badge">
-          <div class="badge-num">4,500+</div>
-          <div class="badge-label">Years of practice</div>
-        </div>
-      </div>
-      <div class="what-text fade-up" style="transition-delay:0.12s">
-        <div class="overline">What is aromatherapy</div>
-        <h2>Plant-made chemistry, guided by the breath.</h2>
-        <p>Aromatherapy uses volatile compounds distilled from flowers, roots, resins and leaves to gently influence the nervous system. Scent reaches the amygdala and hippocampus in under a second — which is why a single inhalation can shift a mood before the mind catches up.</p>
-        <p>We don't chase fads. Each Olevia blend pairs a tradition — Egyptian resins, Ayurvedic tonics, Gattefossé's French apothecary — with modern dilution science and a ritual that can fit into an already-full day.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- BENEFITS BENTO -->
-  <section class="section section-bone">
-    <div class="container">
-      <div class="bento-header fade-up">
-        <div class="overline">How aromatherapy heals</div>
-        <h2>Five pathways from leaf to limbic system.</h2>
-      </div>
-      <div class="bento-grid">
-        <!-- Sleep -->
-        <div class="bento-card bento-c5 fade-up" style="background:var(--bone);transition-delay:0.08s">
-          <svg class="bento-icon" width="28" height="28" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <div>
-            <div class="bento-title">Sleep</div>
-            <p class="bento-blurb">A warm, enveloping blend of lavender, vetiver and chamomile for quiet evenings.</p>
-          </div>
-        </div>
-        <!-- Focus -->
-        <div class="bento-card bento-c4 fade-up" style="background:white;transition-delay:0.12s">
-          <svg class="bento-icon" width="28" height="28" viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
-          <div>
-            <div class="bento-title">Focus</div>
-            <p class="bento-blurb">A crisp, herbaceous blend of rosemary and peppermint for the desk or studio.</p>
-          </div>
-        </div>
-        <!-- Breath -->
-        <div class="bento-card bento-c3 fade-up" style="background:white;transition-delay:0.16s">
-          <svg class="bento-icon" width="28" height="28" viewBox="0 0 24 24"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
-          <div>
-            <div class="bento-title">Breath</div>
-            <p class="bento-blurb">A clean, resinous blend of eucalyptus and frankincense for mindful moments.</p>
-          </div>
-        </div>
-        <!-- Pain -->
-        <div class="bento-card bento-c4 fade-up" style="background:var(--bone);transition-delay:0.2s">
-          <svg class="bento-icon" width="28" height="28" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          <div>
-            <div class="bento-title">Move Freely</div>
-            <p class="bento-blurb">Warming ginger and wintergreen in a convenient roll-on format for active days.</p>
-          </div>
-        </div>
-        <!-- Mood -->
-        <div class="bento-card bento-c3 fade-up" style="background:white;transition-delay:0.24s">
-          <svg class="bento-icon" width="28" height="28" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <div>
-            <div class="bento-title">Mood</div>
-            <p class="bento-blurb">A bright, floral blend of bergamot and ylang ylang for slow, sunny afternoons.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HISTORY TIMELINE -->
-  <section class="section">
-    <div class="container">
-      <div class="timeline-header fade-up">
-        <div class="overline">A brief history</div>
-        <h2>Aromatherapy began when we began burning resin to pray.</h2>
-      </div>
-      <div class="timeline-wrap">
-        <div class="timeline-line"></div>
-        <div class="timeline-items" id="timeline-items"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- FEATURED PRODUCTS -->
   <section class="section section-bone" id="section-featured">
     <div class="container">
@@ -978,33 +950,90 @@
     </div>
   </section>
 
-  <!-- JOURNAL PREVIEW -->
-  <section class="section">
+  <!-- REVIEWS -->
+  <section class="reviews-section">
     <div class="container">
-      <div class="featured-header fade-up">
-        <div>
-          <div class="overline">From the journal</div>
-          <h2>Field notes on breath,<br>blends & botany.</h2>
-        </div>
-        <button class="btn-ghost hide-mobile" onclick="navigate('blogs')">Read more
-          <svg width="14" height="14" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-        </button>
+      <div class="reviews-header fade-up">
+        <div class="overline">What people are saying</div>
+        <h2>Loved by those<br><em style="color:var(--amber);font-style:italic">who tried it.</em></h2>
       </div>
-      <div class="journal-grid" id="journal-grid"></div>
+      <div class="reviews-grid">
+
+        <div class="review-card fade-up" style="transition-delay:0.05s">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-product-tag">Season Change · Diffuser</div>
+          <p class="review-text">"I diffuse this every morning and it completely sets the tone for the day. The eucalyptus and clove together are unlike anything I've tried before."</p>
+          <div class="review-author">
+            <div class="review-name">Sandra L.</div>
+            <div class="review-location">Edmonton, AB</div>
+          </div>
+        </div>
+
+        <div class="review-card fade-up" style="transition-delay:0.1s">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-product-tag">Move Freely · Active Blend</div>
+          <p class="review-text">"The ginger and frankincense combination in this is so warm and rich. I use it before my morning walks — the amber bottle and dropper make it feel really luxurious."</p>
+          <div class="review-author">
+            <div class="review-name">Karen T.</div>
+            <div class="review-location">Sherwood Park, AB</div>
+          </div>
+        </div>
+
+        <div class="review-card fade-up" style="transition-delay:0.15s">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-product-tag">Stress Free · Roll-on</div>
+          <p class="review-text">"I keep this in my bag at all times. The frankincense and patchouli are so calming — just rolling it on my wrists makes me slow down and breathe."</p>
+          <div class="review-author">
+            <div class="review-name">Priya M.</div>
+            <div class="review-location">St. Albert, AB</div>
+          </div>
+        </div>
+
+        <div class="review-card fade-up" style="transition-delay:0.2s">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-product-tag">Frost & Fern · Roll-on</div>
+          <p class="review-text">"The rosemary and frankincense in this blend are absolutely beautiful together. I use it on my wrists every morning — it's become a non-negotiable part of my routine."</p>
+          <div class="review-author">
+            <div class="review-name">Danielle F.</div>
+            <div class="review-location">Fort Saskatchewan, AB</div>
+          </div>
+        </div>
+
+        <div class="review-card fade-up" style="transition-delay:0.25s">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-product-tag">Season Change · Diffuser</div>
+          <p class="review-text">"Perfect for the Alberta winters. The eucalyptus opens everything up and the lavender softens it beautifully. I've gifted this three times already."</p>
+          <div class="review-author">
+            <div class="review-name">Joanne B.</div>
+            <div class="review-location">Edmonton, AB</div>
+          </div>
+        </div>
+
+        <div class="review-card fade-up" style="transition-delay:0.3s">
+          <div class="review-stars">★★★★★</div>
+          <div class="review-product-tag">Stress Free · Roll-on</div>
+          <p class="review-text">"Five oils in one little roll-on and every single one of them is noticeable. The ginger gives it a warmth that makes it feel so comforting. Genuinely love this blend."</p>
+          <div class="review-author">
+            <div class="review-name">Ashley W.</div>
+            <div class="review-location">Leduc, AB</div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section style="padding-bottom:6rem">
+  <!-- ABOUT -->
+  <section class="section">
     <div class="container">
-      <div class="cta-box grain-overlay fade-up">
-        <svg class="leaf-icon" width="32" height="32" viewBox="0 0 24 24" stroke="var(--sage-dark)"><path d="M17 8C8 10 5.9 16.17 3.82 19.08c.38-2.47 2-9.88 10-12.08C9 9.5 8 12 7.5 14.5 10 14 17 11.5 17 8z"/></svg>
-        <h3>Balance is not a destination.<br><em>It begins here.</em></h3>
-        <div style="margin-top:2.5rem;display:flex;justify-content:center">
-          <button class="btn-primary" onclick="navigate('products')">Start your ritual
-            <svg width="16" height="16" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-          </button>
-        </div>
+      <div style="max-width:680px;margin:0 auto;text-align:center" class="fade-up">
+        <div class="overline">About Olevia</div>
+        <h2 style="font-size:clamp(1.8rem,4vw,2.6rem);color:var(--forest);line-height:1.2;margin:1rem 0 1.5rem">Small-batch blends,<br>made with care in Alberta.</h2>
+        <p style="color:var(--muted);font-size:1.05rem;line-height:1.8;margin-bottom:1.5rem">Olevia is a handcrafted aromatherapy brand rooted in botanical tradition. Every blend is made in small batches — never mass-produced — using quality essential oils chosen for their aroma and character. You'll find us at local Alberta markets and right here online.</p>
+        <p style="color:var(--muted);font-size:1.05rem;line-height:1.8;margin-bottom:2.5rem">Have a question about a blend, want to know what's in stock, or just want to talk oils? Reach out — we love hearing from you.</p>
+        <button class="btn-primary" onclick="navigate('products')">Explore the blends
+          <svg width="16" height="16" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </button>
       </div>
     </div>
   </section>
