@@ -15,6 +15,8 @@
 - **Removed blog `b1`** (`Why Scent Reaches the Brain Before Thought Does`, 5 min read) from the `BLOGS` array in `olevia.html`. Journal hero now starts with `The Roll-On Ritual` (b2). Shop tab unaffected (products-only as before).
 - **Removed blog `b2`** (`The Roll-On Ritual: Topical Aromatherapy for the Rest of Us`) — was bleeding into the Active Blends page. Journal hero now starts with `Gattefossé and the Burn That Changed Everything` (b3).
 - **Fixed malformed HTML in `#page-blogs`**: removed an extra `</div>` after `blogs-header` that was prematurely closing the page wrapper, causing `#blogs-hero-section` and `#blogs-grid-section` to render outside `.page` and leak onto the Shop/Active Blends view.
+- **Renamed Diffuser Blend (`p4`) → "Seasonal Change", price set to $15** in the Active Blends page.
+- **Updated cold-process soap blog (`b4`) cover image** to a verified Unsplash URL of artisan soap bars with lavender (replaced broken Pexels link).
 
 ## Files of Reference
 - `/app/olevia.html` – source of truth for site content (BLOGS / PRODUCTS hardcoded JS arrays, line ~1248 onward).
